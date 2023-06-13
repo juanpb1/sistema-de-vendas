@@ -20,6 +20,7 @@ import Controllers.Cliente
 main :: IO ()
 main = do
     conn <- open "app/db/sistemavendas.db"
+    addProduto 4 "Mouse" "Logitech" 35.0 1
     rows <- query_ conn "SELECT * FROM produto" :: IO [Produto]
     mapM_ print rows
     close conn
