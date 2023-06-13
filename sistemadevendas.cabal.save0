@@ -1,0 +1,38 @@
+cabal-version:      2.4
+name:               sistemadevendas
+version:            0.1.0.0
+
+-- A short (one-line) description of the package.
+-- synopsis: Sistema de gerenciamento de vendas
+
+-- A longer description of the package.
+-- description: Sistema criado para gerenciamento de vendas de um empresa, tem como objetivo, gerenciar e 
+administrar produtos, vendas, clientes e os fornecedores. Outromais, seria basicamente um CRUD, onde vou criar, 
+ler, atualizar e deletar meus dados. 
+
+-- A URL where users can report bugs.
+-- bug-reports:
+license:            NONE
+
+-- The package author(s).
+-- author:
+
+-- An email address to which users can send suggestions, bug reports, and patches.
+-- maintainer:
+
+-- A copyright notice.
+-- copyright:
+-- category:
+extra-source-files: CHANGELOG.md
+
+executable sistemadevendas
+    main-is:          Main.hs
+
+    -- Modules included in this executable, other than Main.
+    -- other-modules:
+
+    -- LANGUAGE extensions used by modules in this package.
+    -- other-extensions:
+    build-depends:    base ^>=4.16.4.0
+    hs-source-dirs:   app
+    default-language: Haskell2010
