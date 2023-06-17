@@ -1,0 +1,17 @@
+Sistema de Gerenciamento de Vendas
+Você foi contratado para desenvolver um sistema de gerenciamento de vendas para uma loja de eletrônicos. O sistema será responsável pelo controle de estoque, registro de vendas, cadastro de clientes e gestão de fornecedores.
+
+A seguir, são apresentadas os dados que precisam ser registrados no sistema:
+
+Dados "Produtos": Identificador único do produto, Nome do produto, Marca do produto, Preço unitário do produto, Quantidade disponível em estoque
+Dados "Vendas": Identificador único da venda, Identificador do produto vendido, Identificador do cliente que realizou a compra, Data de realização da venda, Quantidade de produtos vendidos,  Valor total da venda.
+Dados "Clientes": Identificador único do cliente, Nome completo do cliente, Endereço do cliente, E-mail do cliente, Número de telefone do cliente.
+Dados "Fornecedores": Identificador único do fornecedor, Nome do fornecedor, Endereço do fornecedor, E-mail do fornecedor, Número de telefone do fornecedor.
+
+As seguintes perguntas devem ser respondidas:
+
+Recuperar todos os produtos disponíveis em estoque.
+Recuperar todas as vendas realizadas em um determinado período.
+Recuperar todas as vendas de um cliente específico.
+Recuperar o total de vendas de um produto específico.
+Recuperar todos os fornecedores cadastrados.
