@@ -20,6 +20,16 @@
   (major1) == 4 && (major2) <  16 || \
   (major1) == 4 && (major2) == 16 && (minor) <= 4)
 #endif /* MIN_VERSION_base */
+/* package process-1.6.16.0 */
+#ifndef VERSION_process
+#define VERSION_process "1.6.16.0"
+#endif /* VERSION_process */
+#ifndef MIN_VERSION_process
+#define MIN_VERSION_process(major1,major2,minor) (\
+  (major1) <  1 || \
+  (major1) == 1 && (major2) <  6 || \
+  (major1) == 1 && (major2) == 6 && (minor) <= 16)
+#endif /* MIN_VERSION_process */
 /* package sqlite-simple-0.4.18.2 */
 #ifndef VERSION_sqlite_simple
 #define VERSION_sqlite_simple "0.4.18.2"
@@ -111,16 +121,6 @@
   (major1) == 0 && (major2) <  68 || \
   (major1) == 0 && (major2) == 68 && (minor) <= 8)
 #endif /* MIN_TOOL_VERSION_hsc2hs */
-/* tool pkg-config-1.8.0 */
-#ifndef TOOL_VERSION_pkg_config
-#define TOOL_VERSION_pkg_config "1.8.0"
-#endif /* TOOL_VERSION_pkg_config */
-#ifndef MIN_TOOL_VERSION_pkg_config
-#define MIN_TOOL_VERSION_pkg_config(major1,major2,minor) (\
-  (major1) <  1 || \
-  (major1) == 1 && (major2) <  8 || \
-  (major1) == 1 && (major2) == 8 && (minor) <= 0)
-#endif /* MIN_TOOL_VERSION_pkg_config */
 /* tool runghc-9.2.8 */
 #ifndef TOOL_VERSION_runghc
 #define TOOL_VERSION_runghc "9.2.8"
@@ -131,6 +131,16 @@
   (major1) == 9 && (major2) <  2 || \
   (major1) == 9 && (major2) == 2 && (minor) <= 8)
 #endif /* MIN_TOOL_VERSION_runghc */
+/* tool strip-2.28 */
+#ifndef TOOL_VERSION_strip
+#define TOOL_VERSION_strip "2.28"
+#endif /* TOOL_VERSION_strip */
+#ifndef MIN_TOOL_VERSION_strip
+#define MIN_TOOL_VERSION_strip(major1,major2,minor) (\
+  (major1) <  2 || \
+  (major1) == 2 && (major2) <  28 || \
+  (major1) == 2 && (major2) == 28 && (minor) <= 0)
+#endif /* MIN_TOOL_VERSION_strip */
 
 #ifndef CURRENT_COMPONENT_ID
 #define CURRENT_COMPONENT_ID "sistemadevendas-0.1.0.0-inplace-sistemadevendas"

@@ -4,13 +4,30 @@ import Model.Fornecedor
 import Database.SQLite.Simple
 import Database.SQLite.Simple.Types
 import Data.String (fromString)
+import System.Process
+import System.IO
 
-addFornecedor ::  String -> String -> String -> String -> Int -> IO()
-addFornecedor nome endereco email telefone idFornecedor = do
+addFornecedor :: IO()
+addFornecedor = do
     conn <- open "app/db/sistemavendas.db"
+
+    putStrLn("=========== Adicionar Fornecedor ===========")
+    putStrLn "ID: "
+    idFornecedor <- readLn :: IO Int
+    putStrLn "Nome: "
+    nome <- getLine
+    putStrLn "Endereço:"
+    endereco <- getLine
+    putStrLn "Email:"
+    email <- getLine
+    putStrLn "Telefone: "
+    telefone <- readLn :: IO Int
+
     let query = fromString "INSERT INTO Fornecedor (nome, endereco, email, telefone, idFornecedor) VALUES (?, ?, ?, ?, ?)"
     execute conn query (nome, endereco, email, telefone, idFornecedor)
-    print "Fornecedor cadastrado"
+    print "Fornecedor cadastrado!"
+    putStrLn "Aperte ENTER para continuar..."
+    getLine
     close conn
 
 lerFornecedores:: IO()
@@ -25,20 +42,73 @@ lerFornecedores = do
                                                                     "\nEmail: "++ show email ++
                                                                     "\nTelefone: "++ show telefone ++
                                                                     "\n") fornecedores
+    putStrLn "Aperte ENTER para continuar..."
+    getLine
     close conn
 
-atualizarFornecedor :: Int -> String -> String -> String -> String -> IO()
-atualizarFornecedor idFornecedor  nome endereco email telefone = do
+atualizarFornecedor :: IO()
+atualizarFornecedor = do
     conn <- open "app/db/sistemavendas.db"
+
+    putStrLn("=========== Editar Fornecedor ===========")
+    putStrLn "ID: "
+    idFornecedor <- readLn :: IO Int
+    putStrLn "Nome: "
+    nome <- getLine
+    putStrLn "Endereço:"
+    endereco <- getLine
+    putStrLn "Email:"
+    email <- getLine
+    putStrLn "Telefone: "
+    telefone <- readLn :: IO Int
+
     let query = fromString "UPDATE Fornecedor SET nome = ?, endereco = ?, email = ?, telefone = ? WHERE idFornecedor = ?"
     execute conn query (nome, endereco, email, telefone, idFornecedor)
-    putStrLn "Fornecedor atualizado"
+    putStrLn "Fornecedor atualizado!"
+    putStrLn "Aperte ENTER para continuar..."
+    getLine
     close conn
 
-deletarFornecedor :: Int -> IO()
-deletarFornecedor idFornecedor = do
+deletarFornecedor :: IO()
+deletarFornecedor = do
     conn <- open "app/db/sistemavendas.db"
+
+    putStrLn("=========== Deletar fornecedor ===========")
+    putStrLn "ID: "
+    idFornecedor <- readLn :: IO Int
+
     let query = fromString "DELETE FROM Fornecedor WHERE idFornecedor = ?"
     execute conn query (Only idFornecedor)
-    putStrLn "Fornecedor removido"
+    putStrLn "Fornecedor removido!"
+    putStrLn "Aperte ENTER para continuar..."
+    getLine
     close conn
+
+menuFornecedor:: IO()
+menuFornecedor = do 
+    system "cls"
+    putStrLn("=========== Menu Fornecedor ===========")
+    putStrLn "1 - Adicionar fornecedor"
+    putStrLn "2 - Exibir fornecedores" 
+    putStrLn "3 - Atualizar fornecedor"
+    putStrLn "4 - Detelar fornecedor"
+    putStrLn("Opção: ")
+    opFornecedor <- getChar
+    getChar
+    switchOpFornecedor opFornecedor
+
+switchOpFornecedor :: Char -> IO ()
+switchOpFornecedor '1' = do
+    addFornecedor
+    return()
+switchOpFornecedor '2' = do
+    lerFornecedores
+    return()
+switchOpFornecedor '3' = do
+    atualizarFornecedor
+    return()
+switchOpFornecedor '4' = do
+    deletarFornecedor 
+    return()
+switchOpCliente _ = do
+    putStrLn "Opção inválida"
