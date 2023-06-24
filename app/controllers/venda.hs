@@ -83,7 +83,7 @@ atualizarVenda = do
     let idProdutoDesejado = idProduto
     let precoProduto = case find(\(id, _, _, _, _) -> id == idProdutoDesejado) produtos of
                         Just (_, _, _, preco, _) -> preco
-                        Nothing -> 0.0 -- Valor padrão caso o produto não seja encontrado
+                        Nothing -> 0.0 
 
     let totalVenda = precoProduto * fromIntegral qtdVendida
 
