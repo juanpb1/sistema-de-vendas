@@ -20,6 +20,16 @@
   (major1) == 4 && (major2) <  16 || \
   (major1) == 4 && (major2) == 16 && (minor) <= 4)
 #endif /* MIN_VERSION_base */
+/* package old-locale-1.0.0.7 */
+#ifndef VERSION_old_locale
+#define VERSION_old_locale "1.0.0.7"
+#endif /* VERSION_old_locale */
+#ifndef MIN_VERSION_old_locale
+#define MIN_VERSION_old_locale(major1,major2,minor) (\
+  (major1) <  1 || \
+  (major1) == 1 && (major2) <  0 || \
+  (major1) == 1 && (major2) == 0 && (minor) <= 0)
+#endif /* MIN_VERSION_old_locale */
 /* package process-1.6.16.0 */
 #ifndef VERSION_process
 #define VERSION_process "1.6.16.0"

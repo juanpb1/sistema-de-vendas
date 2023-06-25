@@ -9,9 +9,32 @@ import Data.Int (Int)
 import System.Process
 import System.IO
 
+atualizarQuantidadeProduto :: Int -> Int -> IO Bool
+atualizarQuantidadeProduto idProduto quantidadeVendida = do
+    conn <- open "app/db/sistemavendas.db"
+
+    let consulta = fromString "SELECT quantidade FROM Produto WHERE idProduto = ?"
+    dados <- query conn consulta (Only idProduto) :: IO [Only Int]
+
+    case dados of
+        [Only quantidade] ->
+            if quantidade > quantidadeVendida
+                then do
+                    let query = fromString "UPDATE Produto SET quantidade = ? WHERE idProduto = ?"
+                    execute conn query (quantidade - quantidadeVendida, idProduto)
+                    close conn
+                    return True
+                else do
+                    close conn
+                    putStrLn "Não há quantidade suficiente para a venda."
+                    return False
+        _ -> do
+            close conn
+            putStrLn "Produto não encontrado."
+            return False
+
 addVenda ::  IO()
 addVenda  = do
-
     conn <- open "app/db/sistemavendas.db"
 
     putStrLn("=========== Realizar venda ===========")
@@ -25,22 +48,32 @@ addVenda  = do
     dataVenda <- getLine
     putStrLn "Quantidade: "
     qtdVendida <- readLn :: IO Int
+
+    vendaRealiza <- atualizarQuantidadeProduto idProduto qtdVendida
     
-    let queryPreco = fromString "SELECT idProduto, nome, marca, preco, quantidade FROM Produto"
-    produtos <- query_ conn queryPreco :: IO[(Int, String, String, Double, Int)]
+    if vendaRealiza
+        then do
+            let queryPreco = fromString "SELECT idProduto, nome, marca, preco, quantidade FROM Produto"
+            produtos <- query_ conn queryPreco :: IO [(Int, String, String, Double, Int)]
 
-    let idProdutoDesejado = idProduto
-    let precoProduto = case find(\(id, _, _, _, _) -> id == idProdutoDesejado) produtos of
-                        Just (_, _, _, preco, _) -> preco
-                        Nothing -> 0.0 -- Valor padrão caso o produto não seja encontrado
+            let idProdutoDesejado = idProduto
+            let precoProduto = case find (\(id, _, _, _, _) -> id == idProdutoDesejado) produtos of
+                    Just (_, _, _, preco, _) -> preco
+                    Nothing -> 0.0
 
-    let totalVenda = precoProduto * fromIntegral qtdVendida
+            let totalVenda = precoProduto * fromIntegral qtdVendida
 
-    let query = fromString "INSERT INTO Venda (idVenda, idProduto, idCliente, data, qtdVendida, totalVenda) VALUES (?, ?, ?, ?, ?, ?)"
-    execute conn query (idVenda, idProduto, idCliente, dataVenda, qtdVendida, totalVenda)
-    print "Venda realizada!"
-    putStrLn "Aperte ENTER para continuar..."
-    getLine
+            let queryInsert = fromString "INSERT INTO Venda (idVenda, idProduto, idCliente, data, qtdVendida, totalVenda) VALUES (?, ?, ?, ?, ?, ?)"
+            execute conn queryInsert (idVenda, idProduto, idCliente, dataVenda, qtdVendida, totalVenda)
+
+            putStrLn "Venda realizada!"
+            putStrLn "Aperte ENTER para continuar..."
+            getLine
+        else do
+            putStrLn "Não foi possível realizar a venda."
+            putStrLn "Aperte ENTER para continuar..."
+            getLine
+
     close conn
 
 lerVendas:: IO()

@@ -10,7 +10,7 @@ Dados "Fornecedores": Identificador único do fornecedor, Nome do fornecedor, En
 
 As seguintes perguntas devem ser respondidas:
 
-1. Recuperar todos os produtos disponíveis em estoque.
+1. Recuperar todos os produtos disponíveis em estoque.✔️
 2. Recuperar todas as vendas realizadas em um determinado período.
 3. Recuperar todas as vendas de um cliente específico. ✔️ 
 4. Recuperar o total de vendas de um produto específico.✔️ 

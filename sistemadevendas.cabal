@@ -38,6 +38,7 @@ executable sistemadevendas
                     , sqlite-simple
                     , text
                     , process
+                    , old-locale
 
     hs-source-dirs:   app
     default-language: Haskell2010
