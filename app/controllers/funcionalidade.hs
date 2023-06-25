@@ -42,13 +42,23 @@ entreData :: IO()
 entreData = do 
     conn <- open "app/db/sistemavendas.db"
 
-    putStrLn "Início: "
+    putStrLn "Início[YYYY-MM-DD]: "
     dataInicio <- getLine
     dataInicioCon <- converterData dataInicio
-    putStrLn "Fim: "
+    putStrLn "Fim[YYYY-MM-DD]: "
     dataFim <- getLine
     dataFimCon <- converterData  dataFim
 
+    let dados = fromString "SELECT idVenda, idProduto, idCliente, data, qtdVendida, totalVenda FROM Venda WHERE data BETWEEN ? AND ?"
+    vendas <- query conn dados (dataInicio, dataFim) :: IO [(Int, Int, Int, String, Int, Double)]
+    
+    mapM_ (\(idVenda, idProduto, idCliente, dataVenda, qtdVendida, totalVenda) -> putStrLn $ "ID : " ++ show idVenda ++ 
+                                                                    "\nID Produto: " ++ show idProduto ++ 
+                                                                    "\nID Cliente: "++ show idCliente ++
+                                                                    "\nData da venda: "++ show dataVenda ++
+                                                                     "\nQuantidade vendida: " ++ show qtdVendida ++ 
+                                                                    "\nTotal venda : R$"++ show totalVenda ++
+                                                                    "\n") vendas
     putStrLn "Aperte ENTER para continuar..."
     getLine
     close conn
