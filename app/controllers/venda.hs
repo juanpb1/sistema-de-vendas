@@ -80,16 +80,20 @@ lerVendas:: IO()
 lerVendas = do 
     conn <- open "app/db/sistemavendas.db"
 
-    let query = fromString "SELECT idVenda, idProduto, idCliente, data, qtdVendida, totalVenda FROM Venda"
-    vendas <- query_ conn query :: IO[(Int, Int, Int, String, Int, Int)]
+    let query = fromString "SELECT V.idVenda, P.nome AS nomeProduto, C.nome AS nomeCliente, V.data, V.qtdVendida, V.totalVenda \
+                                    \ FROM Venda V \  
+                                    \ JOIN Produto P ON V.idProduto = P.idProduto\
+                                    \ JOIN Cliente C ON V.idCliente = C.idCliente;"
+    vendas <- query_ conn query :: IO[(Int, String, String, String, Int, Double)]
     
-    mapM_ (\(idVenda, idProduto, idCliente, dataVenda, qtdVendida, totalVenda) -> putStrLn $ "ID : " ++ show idVenda ++ 
-                                                                    "\nID Produto: " ++ show idProduto ++ 
-                                                                    "\nID Cliente: "++ show idCliente ++
-                                                                    "\nData da venda: "++ show dataVenda ++
-                                                                     "\nQuantidade vendida: " ++ show qtdVendida ++ 
-                                                                    "\nTotal venda : R$"++ show totalVenda ++
-                                                                    "\n") vendas
+    mapM_ (\(idVenda, nomeProduto, nomeCliente, dataVenda, qtdVendida, totalVenda) -> do
+        putStrLn $ "ID : " ++ show (idVenda :: Int)  
+        putStrLn $ "Nome do Produto: " ++ show nomeProduto   
+        putStrLn $ "Nome do Cliente: "++ show nomeCliente 
+        putStrLn $ "Data da venda: "++ show dataVenda
+        putStrLn $ "Quantidade vendida: " ++ show (qtdVendida :: Int) 
+        putStrLn $ "Total venda : R$"++ show (totalVenda :: Double) 
+        putStrLn $ "\n") vendas
     putStrLn "Aperte ENTER para continuar..."
     getLine
     close conn
@@ -105,7 +109,7 @@ atualizarVenda = do
     idProduto <- readLn :: IO Int
     putStrLn "ID do Cliente:"
     idCliente <- readLn :: IO Int
-    putStrLn "Data da Venda [01012023]:"
+    putStrLn "Data da Venda [YYYY-MM-DD]:"
     dataVenda <- getLine
     putStrLn "Quantidade: "
     qtdVendida <- readLn :: IO Int
@@ -131,13 +135,15 @@ deletarVenda :: IO()
 deletarVenda = do
     conn <- open "app/db/sistemavendas.db"
 
-    putStrLn("=========== Deltar venda ===========")
+    putStrLn("=========== Deletar venda ===========")
     putStrLn "ID: "
     idVenda <- readLn :: IO Int
 
     let query = fromString "DELETE FROM Venda WHERE idVenda = ?"
     execute conn query (Only idVenda)
-    putStrLn "Venda removida"
+    putStrLn "Venda removida!"
+    putStrLn "Aperte ENTER para continuar..."
+    getLine
     close conn
 
 menuVenda :: IO()

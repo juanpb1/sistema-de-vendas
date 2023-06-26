@@ -11,7 +11,7 @@ addFornecedor :: IO()
 addFornecedor = do
     conn <- open "app/db/sistemavendas.db"
 
-    putStrLn("=========== Adicionar Fornecedor ===========")
+    putStrLn("=========== Adicionar fornecedor ===========")
     putStrLn "ID: "
     idFornecedor <- readLn :: IO Int
     putStrLn "Nome: "
@@ -35,13 +35,14 @@ lerFornecedores = do
     conn <- open "app/db/sistemavendas.db"
     let query = fromString "SELECT nome, endereco, email, telefone, idFornecedor FROM Fornecedor"
     fornecedores <- query_ conn query :: IO[(String, String, String, String, Int)]
-    putStrLn "Fornecedores:"
-    mapM_ (\(nome, endereco, email, telefone, idFornecedor) -> putStrLn $ "ID: " ++ show idFornecedor ++ 
-                                                                    "\nNome: " ++ show nome ++ 
-                                                                    "\nEndereço: " ++ show endereco ++ 
-                                                                    "\nEmail: "++ show email ++
-                                                                    "\nTelefone: "++ show telefone ++
-                                                                    "\n") fornecedores
+    putStrLn "=========== Fornecedores: ==========="
+    mapM_ (\(nome, endereco, email, telefone, idFornecedor) -> do  
+        putStrLn $ "ID: " ++ show (idFornecedor :: Int)  
+        putStrLn $ "Nome: " ++ show nome 
+        putStrLn $ "Endereço: " ++ show endereco 
+        putStrLn $ "Email: "++ show email 
+        putStrLn $"Telefone: "++ show telefone
+        putStrLn $"\n") fornecedores
     putStrLn "Aperte ENTER para continuar..."
     getLine
     close conn
@@ -50,7 +51,7 @@ atualizarFornecedor :: IO()
 atualizarFornecedor = do
     conn <- open "app/db/sistemavendas.db"
 
-    putStrLn("=========== Editar Fornecedor ===========")
+    putStrLn("=========== Editar fornecedor ===========")
     putStrLn "ID: "
     idFornecedor <- readLn :: IO Int
     putStrLn "Nome: "
@@ -60,7 +61,7 @@ atualizarFornecedor = do
     putStrLn "Email:"
     email <- getLine
     putStrLn "Telefone: "
-    telefone <- readLn :: IO Int
+    telefone <- getLine
 
     let query = fromString "UPDATE Fornecedor SET nome = ?, endereco = ?, email = ?, telefone = ? WHERE idFornecedor = ?"
     execute conn query (nome, endereco, email, telefone, idFornecedor)

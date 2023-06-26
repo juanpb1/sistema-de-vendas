@@ -21,7 +21,7 @@ addCliente = do
     putStrLn "Email:"
     email <- getLine
     putStrLn "Telefone: "
-    telefone <- readLn :: IO Int
+    telefone <- getLine
     
     let query = fromString "INSERT INTO Cliente (nome, endereco, email, telefone, idCliente) VALUES (?, ?, ?, ?, ?)"
     execute conn query (nome, endereco, email, telefone, idCliente)
@@ -34,14 +34,15 @@ lerClientes:: IO()
 lerClientes = do 
     conn <- open "app/db/sistemavendas.db"
     let query = fromString "SELECT nome, endereco, email, telefone, idCliente FROM Cliente"
-    clientes <- query_ conn query :: IO[(String, String, String, Int, Int)]
-    putStrLn "Clientes:"
-    mapM_ (\(nome, endereco, email, telefone, idCliente) -> putStrLn $ "ID: " ++ show idCliente ++ 
-                                                                    "\nNome: " ++ show nome ++ 
-                                                                    "\nEndereço: " ++ show endereco ++ 
-                                                                    "\nEmail: "++ show email ++
-                                                                    "\nTelefone: "++ show telefone ++
-                                                                    "\n") clientes
+    clientes <- query_ conn query :: IO[(String, String, String, String, Int)]
+    putStrLn "=========== Clientes: ==========="
+    mapM_ (\(nome, endereco, email, telefone, idCliente) -> do 
+        putStrLn $ "ID: " ++ show (idCliente :: Int) 
+        putStrLn $ "Nome: " ++ show nome 
+        putStrLn $ "Endereço: " ++ show endereco 
+        putStrLn $ "Email: "++ show email 
+        putStrLn $ "Telefone: "++ show telefone
+        putStrLn $ "\n") clientes
     putStrLn "Aperte ENTER para continuar..."
     getLine
     close conn

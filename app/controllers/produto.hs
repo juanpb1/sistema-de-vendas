@@ -35,12 +35,13 @@ lerProdutos = do
     conn <- open "app/db/sistemavendas.db"
     let query = fromString "SELECT idProduto, nome, marca, preco, quantidade FROM Produto"
     produtos <- query_ conn query :: IO[(Int, String, String, Double, Int)]
-    mapM_ (\(produtoId, nome, marca, preco, quantidade) -> putStrLn $ "ID: " ++ show produtoId ++ 
-                                                                    "\nNome: " ++ show nome ++ 
-                                                                    "\nMarca: " ++ marca ++ 
-                                                                    "\nPreço: R$"++ show preco ++
-                                                                    "\nQuantidade: "++ show quantidade ++
-                                                                    "\n") produtos
+    mapM_ (\(produtoId, nome, marca, preco, quantidade) -> do
+        putStrLn $ "ID: " ++ show (produtoId :: Int) 
+        putStrLn $ "Nome: " ++ show nome  
+        putStrLn $ "Marca: " ++ marca 
+        putStrLn $ "Preço: R$"++ show (preco :: Double) 
+        putStrLn $ "Quantidade: "++ show (quantidade :: Int)
+        putStrLn $ "\n") produtos
     putStrLn "Aperte ENTER para continuar..."
     getLine
     close conn
@@ -84,7 +85,7 @@ deletarProduto = do
 menuProduto :: IO()
 menuProduto = do 
     system "cls"
-    putStrLn("=========== Menu Produtos ===========")
+    putStrLn("=========== Menu produtos ===========")
     putStrLn "1 - Adicionar produto"
     putStrLn "2 - Exibir produtos" 
     putStrLn "3 - Atualizar produto"
