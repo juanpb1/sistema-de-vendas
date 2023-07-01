@@ -1,6 +1,5 @@
 module Controllers.Cliente where
 
-import Model.Cliente
 import Database.SQLite.Simple
 import Database.SQLite.Simple.Types
 import Data.String (fromString)
@@ -10,8 +9,10 @@ import System.IO
 addCliente :: IO()
 addCliente = do
     conn <- open "app/db/sistemavendas.db"
-
+    
+    system "cls"
     putStrLn("=========== Adicionar Cliente ===========")
+    
     putStrLn "ID: "
     idCliente <- readLn :: IO Int
     putStrLn "Nome: "
@@ -25,6 +26,7 @@ addCliente = do
     
     let query = fromString "INSERT INTO Cliente (nome, endereco, email, telefone, idCliente) VALUES (?, ?, ?, ?, ?)"
     execute conn query (nome, endereco, email, telefone, idCliente)
+    
     print "Cliente cadastrado!"
     putStrLn "Aperte ENTER para continuar..."
     getLine
@@ -33,9 +35,13 @@ addCliente = do
 lerClientes:: IO()
 lerClientes = do 
     conn <- open "app/db/sistemavendas.db"
+    
+    system "cls"
+    putStrLn "=========== Lista de clientes ==========="
+
     let query = fromString "SELECT nome, endereco, email, telefone, idCliente FROM Cliente"
     clientes <- query_ conn query :: IO[(String, String, String, String, Int)]
-    putStrLn "=========== Clientes: ==========="
+
     mapM_ (\(nome, endereco, email, telefone, idCliente) -> do 
         putStrLn $ "ID: " ++ show (idCliente :: Int) 
         putStrLn $ "Nome: " ++ show nome 
@@ -43,6 +49,8 @@ lerClientes = do
         putStrLn $ "Email: "++ show email 
         putStrLn $ "Telefone: "++ show telefone
         putStrLn $ "\n") clientes
+
+
     putStrLn "Aperte ENTER para continuar..."
     getLine
     close conn
@@ -50,8 +58,10 @@ lerClientes = do
 atualizarCliente :: IO()
 atualizarCliente  = do
     conn <- open "app/db/sistemavendas.db"
-
+    
+    system "cls"
     putStrLn("=========== Editar cliente ===========")
+    
     putStrLn "ID: "
     idCliente <- readLn :: IO Int
     putStrLn "Nome: "
@@ -65,6 +75,7 @@ atualizarCliente  = do
 
     let query = fromString "UPDATE Cliente SET nome = ?, endereco = ?, email = ?, telefone = ? WHERE idCliente = ?"
     execute conn query (nome, endereco, email, telefone, idCliente)
+    
     putStrLn "Cliente atualizado!"
     putStrLn "Aperte ENTER para continuar..."
     getLine
@@ -80,6 +91,7 @@ deletarCliente = do
 
     let query = fromString "DELETE FROM Cliente WHERE idCliente = ?"
     execute conn query (Only idCliente)
+    
     putStrLn "Cliente removido!"
     putStrLn "Aperte ENTER para continuar..."
     getLine

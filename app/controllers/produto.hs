@@ -1,16 +1,19 @@
 module Controllers.Produto where
 
-import Model.Produto
 import Database.SQLite.Simple
 import Database.SQLite.Simple.Types
 import Data.String (fromString)
 import System.Process
+import Text.Printf
 import System.IO
 
 addProduto :: IO()
 addProduto = do
-    putStrLn("=========== Adicionar produto ===========")
     conn <- open "app/db/sistemavendas.db"
+
+    system "cls"
+    putStrLn("=========== Adicionar produto ===========")
+
     putStrLn "ID: "
     idProduto <- readLn :: IO Int
     putStrLn "Nome:"
@@ -24,6 +27,7 @@ addProduto = do
 
     let query = fromString "INSERT INTO Produto (idProduto, nome, marca, preco, quantidade) VALUES (?, ?, ?, ?, ?)"
     execute conn query (idProduto, nome, marca, preco, quantidade)
+    
     print "Produto adicionado!"
     putStrLn "Aperte ENTER para continuar..."
     getLine
@@ -31,25 +35,34 @@ addProduto = do
 
 lerProdutos :: IO()
 lerProdutos = do 
-    putStrLn("=========== Lista de produtos ===========")
     conn <- open "app/db/sistemavendas.db"
+
+    system "cls"
+    putStrLn("=========== Lista de produtos ===========")
+
     let query = fromString "SELECT idProduto, nome, marca, preco, quantidade FROM Produto"
     produtos <- query_ conn query :: IO[(Int, String, String, Double, Int)]
+    
     mapM_ (\(produtoId, nome, marca, preco, quantidade) -> do
         putStrLn $ "ID: " ++ show (produtoId :: Int) 
         putStrLn $ "Nome: " ++ show nome  
         putStrLn $ "Marca: " ++ marca 
-        putStrLn $ "Preço: R$"++ show (preco :: Double) 
+        let precoFormatado = printf "%.2f" preco :: String
+        putStrLn $ "Preço: R$"++ show precoFormatado 
         putStrLn $ "Quantidade: "++ show (quantidade :: Int)
         putStrLn $ "\n") produtos
+    
     putStrLn "Aperte ENTER para continuar..."
     getLine
     close conn
 
 atualizarProduto :: IO()
 atualizarProduto = do
-    putStrLn("=========== Editar produto ===========")
     conn <- open "app/db/sistemavendas.db"
+
+    system "cls"
+    putStrLn("=========== Editar produto ===========")
+
     putStrLn "ID: "
     idProduto <- readLn :: IO Int
     putStrLn "Nome:"
@@ -60,10 +73,11 @@ atualizarProduto = do
     preco <- readLn :: IO Float
     putStrLn "Quantidade: "
     quantidade <- readLn :: IO Int
-    conn <- open "app/db/sistemavendas.db"
+
     let query = fromString "UPDATE Produto SET nome = ?, marca = ?, preco = ?, quantidade = ? WHERE idProduto = ?"
     execute conn query (nome, marca, preco, quantidade, idProduto)
-    putStrLn "Produto atualizado"
+    
+    putStrLn "Produto atualizado!"
     putStrLn "Aperte ENTER para continuar..."
     getLine
     close conn
@@ -71,13 +85,18 @@ atualizarProduto = do
 
 deletarProduto :: IO()
 deletarProduto = do
-    putStrLn("=========== Deletar produto ===========")
     conn <- open "app/db/sistemavendas.db"
+    
+    system "cls"
+    putStrLn("=========== Deletar produto ===========")
+
     putStrLn "ID: "
     idProduto <- readLn :: IO Int
+
     let query = fromString "DELETE FROM Produto WHERE idProduto = ?"
     execute conn query (Only idProduto)
-    putStrLn "Produto removido"
+
+    putStrLn "Produto removido!"
     putStrLn "Aperte ENTER para continuar..."
     getLine
     close conn

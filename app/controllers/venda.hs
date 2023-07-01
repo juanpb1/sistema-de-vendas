@@ -1,6 +1,5 @@
 module Controllers.Venda where
 
-import Model.Venda
 import Database.SQLite.Simple
 import Database.SQLite.Simple.Types
 import Data.List (find)
@@ -18,7 +17,7 @@ atualizarQuantidadeProduto idProduto quantidadeVendida = do
 
     case dados of
         [Only quantidade] ->
-            if quantidade > quantidadeVendida
+            if quantidade >= quantidadeVendida || quantidade /= 0
                 then do
                     let query = fromString "UPDATE Produto SET quantidade = ? WHERE idProduto = ?"
                     execute conn query (quantidade - quantidadeVendida, idProduto)
@@ -37,6 +36,7 @@ addVenda ::  IO()
 addVenda  = do
     conn <- open "app/db/sistemavendas.db"
 
+    system "cls"
     putStrLn("=========== Realizar venda ===========")
     putStrLn "ID: "
     idVenda <- readLn :: IO Int
@@ -44,7 +44,7 @@ addVenda  = do
     idProduto <- readLn :: IO Int
     putStrLn "ID do Cliente:"
     idCliente <- readLn :: IO Int
-    putStrLn "Data da Venda [01012023]:"
+    putStrLn "Data da Venda [YYYY-MM-DD]:"
     dataVenda <- getLine
     putStrLn "Quantidade: "
     qtdVendida <- readLn :: IO Int
@@ -80,12 +80,14 @@ lerVendas:: IO()
 lerVendas = do 
     conn <- open "app/db/sistemavendas.db"
 
-    let query = fromString "SELECT V.idVenda, P.nome AS nomeProduto, C.nome AS nomeCliente, V.data, V.qtdVendida, V.totalVenda \
+    let query = fromString "SELECT V.idVenda, P.nome, C.nome, V.data, V.qtdVendida, V.totalVenda \
                                     \ FROM Venda V \  
                                     \ JOIN Produto P ON V.idProduto = P.idProduto\
                                     \ JOIN Cliente C ON V.idCliente = C.idCliente;"
     vendas <- query_ conn query :: IO[(Int, String, String, String, Int, Double)]
     
+    system "cls"
+    putStrLn("=========== Venda realizadas ===========")
     mapM_ (\(idVenda, nomeProduto, nomeCliente, dataVenda, qtdVendida, totalVenda) -> do
         putStrLn $ "ID : " ++ show (idVenda :: Int)  
         putStrLn $ "Nome do Produto: " ++ show nomeProduto   
@@ -102,6 +104,7 @@ atualizarVenda :: IO()
 atualizarVenda = do
     conn <- open "app/db/sistemavendas.db"
 
+    system "cls"
     putStrLn("=========== Editar venda ===========")
     putStrLn "ID: "
     idVenda <- readLn :: IO Int
@@ -135,6 +138,7 @@ deletarVenda :: IO()
 deletarVenda = do
     conn <- open "app/db/sistemavendas.db"
 
+    system "cls"
     putStrLn("=========== Deletar venda ===========")
     putStrLn "ID: "
     idVenda <- readLn :: IO Int

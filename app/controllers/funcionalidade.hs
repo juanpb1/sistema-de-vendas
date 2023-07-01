@@ -1,6 +1,5 @@
 module Controllers.Funcionalidade where
 
-import Model.Venda
 import Database.SQLite.Simple
 import Database.SQLite.Simple.Types
 import Data.List (find)
@@ -11,23 +10,27 @@ import System.Locale (defaultTimeLocale)
 import Data.Int (Int)
 import System.Process
 import System.IO
+import Text.Printf
 import Controllers.Fornecedor
 
 produtosDisponiveis :: IO ()
 produtosDisponiveis = do
     conn <- open "app/db/sistemavendas.db"
+    
+    system "cls"
+    putStrLn("=========== Produtos disponiveis ===========")
 
     let query = fromString "SELECT idProduto, nome, marca, preco, quantidade FROM Produto WHERE quantidade > 0"
     produtos <- query_ conn query :: IO[(Int, String, String, Double, Int)]
-    system "cls"
-    putStrLn("=========== PRODUTOS DISPONIVEIS ===========")
+
     mapM_ (\(produtoId, nome, marca, preco, quantidade) -> do
         putStrLn $ "ID: " ++ show (produtoId :: Int) 
         putStrLn $ "Nome: " ++ show nome  
         putStrLn $ "Marca: " ++ marca 
-        putStrLn $ "Preço: R$"++ show (preco :: Double) 
+        let precoFormatado = printf "%.2f" preco :: String
+        putStrLn $ "Preço: R$"++ precoFormatado 
         putStrLn $ "Quantidade: "++ show (quantidade :: Int)
-        ) produtos
+        putStrLn $ "\n") produtos
 
     putStrLn "Aperte ENTER para continuar..."
     getLine
@@ -52,8 +55,9 @@ buscarDataVendas = do
         putStrLn $ "ID Produto: " ++ show (idProduto :: Int) 
         putStrLn $ "ID Cliente: "++ show (idCliente :: Int) 
         putStrLn $ "Data da venda: "++ show dataVenda 
-        putStrLn $ "Quantidade vendida: " ++ show (qtdVendida :: Int) 
-        putStrLn $ "Total venda : R$"++ show (totalVenda :: Double)
+        putStrLn $ "Quantidade vendida: " ++ show (qtdVendida :: Int)
+        let precoFormatado = printf "%.2f" totalVenda :: String
+        putStrLn $ "Total venda : R$"++ show precoFormatado
         putStrLn $ "" 
         ) vendas
     putStrLn "Aperte ENTER para continuar..."
@@ -83,18 +87,20 @@ vendaCliente = do
     putStrLn "ID do Cliente: "
     idClienteInput <- readLn :: IO Int
 
-    let dados = fromString "SELECT Venda.idVenda, Venda.data, Venda.qtdVendida, Venda.totalVenda \
-                                   \ FROM Venda\
-                                   \ JOIN Cliente ON Venda.idCliente = Cliente.idCliente\
-                                   \ WHERE Cliente.idCliente = ?"
+    let dados = fromString "SELECT V.idVenda, P.nome, V.data, V.qtdVendida, V.totalVenda \
+                            \FROM Venda V \
+                            \JOIN Cliente C ON V.idCliente = C.idCliente \
+                            \JOIN Produto P ON V.idProduto = P.idProduto \
+                            \WHERE C.idCliente = ?"
 
     vendas <- query conn dados (Only idClienteInput)
     putStrLn("=========== Vendas do Cliente: " ++ show (idClienteInput :: Int) ++ " ===========")
-    mapM_ (\(idVenda, dataVenda, qtdVendida, totalVenda) -> do
+    mapM_ (\(idVenda, produtoNome, dataVenda, qtdVendida, totalVenda) -> do
             putStrLn $ "Venda: " ++ show (idVenda :: Int)
+            putStrLn $ "Produto: " ++ produtoNome
             putStrLn $ "Data: " ++ dataVenda
             putStrLn $ "Quantidade: " ++ show (qtdVendida :: Int)
-            putStrLn $ "Total: "++ show (totalVenda :: Int)
+            putStrLn $ "Total: "++ show (totalVenda :: Float)
             putStrLn "=============================="
         ) vendas
     
